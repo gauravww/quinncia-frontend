@@ -1,0 +1,41 @@
+
+
+.w-full{
+    width: -webkit-fill-available;
+}
+
+.image-sec{
+    border: 1px solid #cccccc;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 3px 4px 6px 2px #dfdfdf;
+}
+
+.image-sec img {
+    border-radius: 10px 10px 0px 0px;
+}
+
+.pagination {
+    justify-content: center;
+}
+
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+
+    text-align: center;
+    pointer-events: none;
+    top: 14px;
+    left: 10px;
+    color: #aaa;
+}
+
+.has-search{
+    position: relative;
+}

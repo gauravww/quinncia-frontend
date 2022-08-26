@@ -1,0 +1,22 @@
+.tag-box {
+    padding: 5px 20px;
+    color: #345afd!important;
+    margin-right: 10px;
+    background-color: #345afd38!important;
+    border-radius: 50px!important;
+}
+
+.user-comments-box {
+    border: none!important;
+    border-bottom: 1px solid!important;
+    border-radius: 0px!important;
+}
+.form-control:focus{
+    box-shadow: none!important;
+}
+
+
+.time-comment{
+    font-weight: 400!important;
+    font-size: 14px;
+}
