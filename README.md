@@ -1,0 +1,1 @@
+# quinncia-frontend-Type-a-message
