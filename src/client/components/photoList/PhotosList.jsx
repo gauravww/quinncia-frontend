@@ -1,50 +1,125 @@
-import React, { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { getPhoto } from '../../redux/reducers/index';
-import { Link } from "react-router-dom";
-import "./photosList.css"
-import Pagination from 'react-bootstrap/Pagination';
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { getPhoto } from "../../redux/reducers/index";
+import { Link, useNavigate } from "react-router-dom";
+import "./photosList.css";
+import Pagination from "react-bootstrap/Pagination";
 
 const PhotosList = () => {
+  const [perPage] = useState([10]);
+  const [page, setPage] = useState([0]);
+  const [pages, setPages] = useState([0]);
+  const [photoList, setPhotoList] = useState([]);
   const dispatch = useDispatch();
-  const users = useSelector(state => state.photo);
-  console.log(users, "=================users")
+  const navigate = useNavigate();
+  const photos = useSelector((state) => state.photo);
+  console.log(photos?.photoList, "=================users");
   useEffect(() => {
     dispatch(getPhoto());
-  }, [dispatch])
+  }, [dispatch]);
 
-  const DeleteUserData = (id) => {
-    var result = window.confirm("Want to delete?");
-    if (result) {
-      dispatch(deleteUser({ id: id }))
+  useEffect(() => {
+    if (photos?.photoList && photos?.photoList?.length > 0) {
+      setPages(Math.ceil(photos?.photoList?.length / perPage));
+      // createCareTeamList(photos?.PhotoData?)
     }
-  }
+  });
+
+  const handleSearchPhotoList = (event) => {
+    event.preventDefault();
+    const searchParam = event.target.value;
+    console.log(searchParam, "=============searchParam");
+    if (searchParam && searchParam.length > 2) {
+      setPhotoList(
+        photos?.photoList.filter((item) =>
+          item._id.toLowerCase().includes(searchParam.toLowerCase())
+        )
+      );
+    } else {
+      setPages(Math.ceil(photos?.photoList.length / perPage));
+    }
+  };
+  const handlePageClick = (e, p) => {
+    console.log(p, "===============pppppppppp", e);
+    setPage(e);
+  };
+  useEffect(() => {
+    if (photos?.photoList && photos?.photoList?.length) {
+      setPages(Math.ceil(photos?.photoList?.length / perPage));
+      setPhotoList(photos?.photoList);
+    }
+  }, [photos?.photoList]);
+  // console.log(photoList,'===========photoList')
+  let photoListPagination = photoList
+    ? photoList.slice(page * perPage, (page + 1) * perPage)
+    : photoList;
+  console.log(photoListPagination, "============photoListPagination");
+  console.log(page, "=======page");
+  console.log(perPage, "=======perPage");
+  console.log(pages, "===========pages");
+
+  // const DeleteUserData = (id) => {
+  //   var result = window.confirm("Want to delete?");
+  //   if (result) {
+  //     dispatch(deleteUser({ id: id }))
+  //   }
+  // }
 
   return (
     <>
-
-
-      <div className='container my-3'>
-
-        <div className='row align-items-center'>
-          <div className='col'>
+      <div className="container my-3">
+        <div className="row align-items-center">
+          <div className="col">
             <h3>Hi! Ravindra</h3>
           </div>
 
-          <div className='col-sm-3'>
-            <div class="form-group has-search">
-              <span class="bi bi-search form-control-feedback"></span>
-              <input type="text" class="form-control" placeholder="Search" />
+          <div className="col-sm-3">
+            <div className="form-group has-search">
+              <span className="bi bi-search form-control-feedback"></span>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search"
+                onChange={(e) => handleSearchPhotoList(e)}
+              />
             </div>
           </div>
 
-          <div className='col-auto'>
-              <button className='btn btn-primary'><i class="bi bi-file-arrow-up me-2"></i>Upload Image</button>
+          <div className="col-auto">
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate("/photo/")}
+            >
+              <i className="bi bi-file-arrow-up me-2"></i>Upload Image
+            </button>
           </div>
         </div>
 
-        <div className=''>
-          <div className='row my-3'>
+        <div className="">
+          {photoListPagination && photoListPagination.length > 0 ? (
+            <>
+              {photoListPagination.map((item, i) => (
+                <div className="row my-3">
+                  <div className="col-sm-3">
+                    <div className="image-sec mb-3">
+                      <img
+                        onClick={() => navigate(`/photo/detail?id=${item._id}`)}
+                        className="w-full"
+                        src="https://cdn.pixabay.com/photo/2022/08/14/19/20/hummingbird-hawk-moth-7386464_960_720.jpg"
+                        alt=""
+                      />
+                      <div className="image-dec p-2">
+                        <p>{item._id}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </>
+          ) : (
+            <p>Loading..........</p>
+          )}
+          {/* <div className='row my-3'>
             <div className='col-sm-3'>
               <div className='image-sec mb-3'>
                 <img className='w-full' src="https://cdn.pixabay.com/photo/2022/08/14/19/20/hummingbird-hawk-moth-7386464_960_720.jpg" alt="" />
@@ -154,14 +229,24 @@ const PhotosList = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
-          <div className='my-5'>
-
+          <div className="my-5">
+            {/* {photoListPagination.map((_, index) => {
+          return (
+            <Pagination.Item
+              onClick={() => handlePageClick(index + 1)}
+              key={index + 1}
+              active={index + 1 === 1}
+            >
+              {index + 1}
+            </Pagination.Item>
+          );
+        })} */}
             <Pagination>
               <Pagination.First />
               <Pagination.Prev />
-              <Pagination.Item>{1}</Pagination.Item>
+              <Pagination.Item>{pages}</Pagination.Item>
               <Pagination.Ellipsis />
 
               <Pagination.Item>{10}</Pagination.Item>
@@ -177,59 +262,9 @@ const PhotosList = () => {
             </Pagination>
           </div>
         </div>
-
       </div>
-
-      {/* {users?.userData ? (
-        <div>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>Lastname</th>
-                <th>Email</th>
-                <th>Update</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users?.userData.map((item, i) => (
-                <tr>
-                  <td>
-                    <b>{item.id}</b>
-                  </td>
-                  <td>
-                    <b>{item.firstName}</b>
-                  </td>
-                  <td>
-                    <b>{item.lastName}</b>
-                  </td>
-                  <td>
-                    <b>{item.email}</b>
-                  </td>
-                  <td>
-                    <div className='icon'>
-                      <Link to={`/update` + `?id=${item.id}`}>
-                        <FontAwesomeIcon icon={faEdit} color="orange" />
-                      </Link>
-                      <span onClick={() => DeleteUserData(item.id)}>
-                        <FontAwesomeIcon icon={faTrashAlt} color="red" />
-                      </span>
-                    </div>
-
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </Table>
-        </div>
-      ) : (
-        <Spinner animation="border" variant="primary" />
-
-      )} */}
     </>
-
-  )
-}
+  );
+};
 
 export default PhotosList;

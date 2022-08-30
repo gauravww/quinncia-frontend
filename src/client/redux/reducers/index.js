@@ -1,21 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-export const photoSlice = createSlice({
-  name: 'photo',
-  initialState:[],
+export const photoList = createSlice({
+  name: 'photoList',
+  initialState: [],
   reducers: {
-    getPhoto: () => {},
-    createPhoto:()=>{},
-    deletePhoto:()=>{},
-    updatePhoto:()=>{},
+    getPhoto: () => { },
+    addPhoto: () => { },
+    deletePhoto: () => { },
+    updatePhoto: () => { },
+    getPhotoById: () => { },
     setPhoto: (state, action) => {
-      const PhotoData = action.payload;
-      return {...state.PhotoData, PhotoData}
+      const photoList = action.payload;
+      return { ...state.photoList, photoList }
     }
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { getPhoto, setPhoto, createPhoto, deletePhoto, updatePhoto } = photoSlice.actions
+export const { getPhoto, setPhoto, addPhoto, deletePhoto, updatePhoto } = photoList.actions
 
-export default photoSlice.reducer
+export default photoList.reducer
