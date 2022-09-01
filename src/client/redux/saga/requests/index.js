@@ -2,17 +2,24 @@ import axios from "axios";
 import { API } from "../../../config/api";
 
 export function requestGetPhoto() {
-  // return axios.request({
-  //   method: "get",
-  //   // url: "https://my-json-server.typicode.com/atothey/demo/user"
-  //   url:"http://localhost:3000/api/photo/many"
-  // })
   return axios.request({
     method: "get",
-    // url: "https://my-json-server.typicode.com/atothey/demo/user"
     url: API.PHOTO_MANY
   })
   // return axios.API.PHOTO_MANY;
+}
+
+export function requestUpdatePhotoInfo(data) {
+  return axios.request({
+    method: "put",
+    url: `${API.UPDATE_PHOTO_INFO}/${data.photoId}`,
+    data: {
+      "name":data.name,
+      "commentIDs":data.comments,
+      "likes":data.likes,
+      "tagIDs":data.tags
+      },
+  })
 }
 
 export function requestGetPhotoBYId(id) {
@@ -22,78 +29,145 @@ export function requestGetPhotoBYId(id) {
     // data:id ,
   })
 }
+export function requestDeletePhotoBYId(id) {
+  return axios.request({
+    method: "delete",
+    url: `${API.REMOVE_PHOTO_BY_ID}/${id}`,
+    // data:id ,
+  })
+}
+export async function requestAddPhoto(data) {
+  const formData = new FormData();
+  formData.append("profile", data.file);
+  formData.append("name", data.name);
+   formData.append("photoUrl",data.file.name)
 
-export function requestAddPhoto(data) {
-  console.log(data, "data in request");
-  const formdata = new FormData();
-  formdata.append("profile", "erwerew");
-  // formdata.append("likes", data.like);
-  // formdata.append("tagIDs", "1");
-  // formdata.append("commentIDs", data.comments);
-  console.log(Object.fromEntries(formData))
 
-  // console.log(formdata,'=============formdata')
-  // var requestOptions = {
-  //   method: 'POST',
-  //   body: formdata,
-  //   redirect: 'follow'
-  // };
+  try {
+    axios.request({
+      method: "POST",
+      url: API.ADD_PHOTO,
+      data: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+
+    })
+  } catch (error) {
+  }
+
+}
+
+export  async function requestCommentById(ids) {
+  let comments = []
+
+ try {
+  for (const element of ids){
+    let res = await axios.request({
+      method: "get",
+      url: `${API.COMMENT_BY_ID}/${element}`,
+    })
+    if(res.status===200){
+      comments.push(res.data.comment)
+    }
+  }
+
   
-  // fetch("http://localhost:3000/api/photo", requestOptions)
-  //   .then(response => response.text())
-  //   .then(result => console.log(result))
-  //   .catch(error => console.log('error', error));
+  return comments;
+  
+ } catch (error) {
+  
+  
+ }
+}
+
+export async function requestCreateComment (data) {
+  try {
+    let res = await axios.request({
+      method: "post",
+      url: `${API.COMMENT_BY_ID}`,
+       data:data
+    })
+    return res
+    
+  } catch (error) {
+    
+  }
+
+
+}
+
+// handleGetTagById
+
+
+export async function requestGetTagById (data) {
+  let  tags= []
+  for (const element of data) {
+    try {
+      let res = await axios.request({
+        method: "get",
+        url: `${API.TAG}/${element}`,
+
+      })
+       tags.push(res.data.tag)
+      
+    } catch (error) {
+    }
+    
+
+  }
+  return tags
+
+
+
+
 }
 
 
 
+export async function requestCreateTag (data) {
+   let tagIds = []
+   let tags = []
+  for (const element of data.tags) {
+  let data = {name :element}
 
-// export function requestDeleteUser(data) {
-//   return axios.request({
-//     method: "delete",
-//     url:"http://localhost:8081/users/" + data.id,
-//     // data:data ,
-//   })
-// }
+    try {
+      let res = await axios.request({
+        method: "post",
+        url: `${API.TAG}`,
+         data:data
+      })
+      tagIds.push(res.data.tag._id)
+      tags.push(res.data.tag)
+      
+    } catch (error) {
+      
+    }
+
+   }
 
 
-// axios({
-//   method: 'post',
-//   url: 'myurl',
-//   data: bodyFormData,
-//   headers: {'Content-Type': 'multipart/form-data' }
-//   })
-  // .then(function (response) {
-  //     //handle success
-  //     console.log(response);
-  // })
-  // .catch(function (response) {
-  //     //handle error
-  //     console.log(response);
-  // });
+    let addTag = { tagIDs: tagIds}
+   try {
+    let res = await axios.request({
+      method: "put",
+      url: `${API.ADD_PHOTO}/${data.photoId}/tags/attach`,
+       data:addTag
+    })
+    tagIds.push(res.data.tag._id)
+    tags.push(res.data.tag)
+  } catch (error) {
+    
+  }
 
-//   var axios = require('axios');
-// var FormData = require('form-data');
-// var fs = require('fs');
-// var data = new FormData();
-// data.append('profile', fs.createReadStream('/home/webiwork501/Pictures/Screenshot from 2022-07-21 12-25-11.png'));
-// data.append('likes', '1');
-// data.append('tagIDs', '1');
-// data.append('commentIDs', '1');
 
-// var config = {
-//   method: 'post',
-//   url: 'http://localhost:3000/api/photo',
-//   headers: { 
-//     ...data.getHeaders()
-//   },
-//   data : data
-// };
+  return tags
 
-// axios(config)
-// .then(function (response) {
-//   console.log(JSON.stringify(response.data));
-// })
-// .catch(function (error) {
-//   console.log(error);
-// });
+
+  
+ 
+
+
+}
+
+

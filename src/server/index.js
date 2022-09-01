@@ -9,6 +9,9 @@ const app = express();
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, '../src/views'));
 
+app.use('/public', express.static(path.resolve(__dirname, '../storage')));
+
+
 app.use('/api', api);
 
 app.use(client);

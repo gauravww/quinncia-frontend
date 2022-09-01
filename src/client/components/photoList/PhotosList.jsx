@@ -4,6 +4,7 @@ import { getPhoto } from "../../redux/reducers/index";
 import { Link, useNavigate } from "react-router-dom";
 import "./photosList.css";
 import Pagination from "react-bootstrap/Pagination";
+import axios from "axios";
 
 const PhotosList = () => {
   const [perPage] = useState([10]);
@@ -13,7 +14,6 @@ const PhotosList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const photos = useSelector((state) => state.photo);
-  console.log(photos?.photoList, "=================users");
   useEffect(() => {
     dispatch(getPhoto());
   }, [dispatch]);
@@ -21,26 +21,25 @@ const PhotosList = () => {
   useEffect(() => {
     if (photos?.photoList && photos?.photoList?.length > 0) {
       setPages(Math.ceil(photos?.photoList?.length / perPage));
-      // createCareTeamList(photos?.PhotoData?)
     }
   });
+
 
   const handleSearchPhotoList = (event) => {
     event.preventDefault();
     const searchParam = event.target.value;
-    console.log(searchParam, "=============searchParam");
     if (searchParam && searchParam.length > 2) {
       setPhotoList(
         photos?.photoList.filter((item) =>
-          item._id.toLowerCase().includes(searchParam.toLowerCase())
+          item.name.toLowerCase().includes(searchParam.toLowerCase())
         )
       );
     } else {
+      setPhotoList(photos?.photoList);
       setPages(Math.ceil(photos?.photoList.length / perPage));
     }
   };
   const handlePageClick = (e, p) => {
-    console.log(p, "===============pppppppppp", e);
     setPage(e);
   };
   useEffect(() => {
@@ -49,14 +48,9 @@ const PhotosList = () => {
       setPhotoList(photos?.photoList);
     }
   }, [photos?.photoList]);
-  // console.log(photoList,'===========photoList')
   let photoListPagination = photoList
     ? photoList.slice(page * perPage, (page + 1) * perPage)
     : photoList;
-  console.log(photoListPagination, "============photoListPagination");
-  console.log(page, "=======page");
-  console.log(perPage, "=======perPage");
-  console.log(pages, "===========pages");
 
   // const DeleteUserData = (id) => {
   //   var result = window.confirm("Want to delete?");
@@ -105,11 +99,11 @@ const PhotosList = () => {
                       <img
                         onClick={() => navigate(`/photo/detail?id=${item._id}`)}
                         className="w-full"
-                        src="https://cdn.pixabay.com/photo/2022/08/14/19/20/hummingbird-hawk-moth-7386464_960_720.jpg"
+                        src={`http://localhost:3000/public/${item.photoUrl}`}
                         alt=""
                       />
                       <div className="image-dec p-2">
-                        <p>{item._id}</p>
+                        <p>{item?.name}</p>
                       </div>
                     </div>
                   </div>

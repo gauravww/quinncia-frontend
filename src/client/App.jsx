@@ -12,7 +12,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PhotosList from './components/photoList/PhotosList'
 import PhotoDetails from './components/photoDetails/photoDetails'
 import AddPhoto from './components/addPhoto/addPhoto'
-
+import UpdatePhoto from './components/updatePhotoInfo/updatePhotoInfo';
 
 // import UserUpdate from './components/userUpdate/UserUpdate';
 function App() {
@@ -24,7 +24,7 @@ function App() {
           <Route path="/photo/many" element={<PhotosList />} />
           <Route path="/photo/detail" element={<PhotoDetails />}/>
           <Route path="/photo/" element={<AddPhoto />}/>
-
+          <Route path="/photo/update" element={<UpdatePhoto/>} />
         </Routes>
       </BrowserRouter>
 

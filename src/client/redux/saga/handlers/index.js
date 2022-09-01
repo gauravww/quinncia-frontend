@@ -1,15 +1,18 @@
 import { call, put } from 'redux-saga/effects';
-import { setPhoto, getPhoto,  } from '../../reducers/index';
-import { requestGetPhoto, requestGetPhotoBYId, requestAddPhoto } from '../requests/index';
+import { setPhoto, getPhoto,addPhoto} from '../../reducers/index';
+import { requestGetPhoto, requestGetPhotoBYId, requestAddPhoto, requestUpdatePhotoInfo, requestDeletePhotoBYId, requestCommentById,requestCreateComment,requestCreateTag, requestGetTagById} from '../requests/index';
+
+import { setComment ,appendComment} from '../../reducers/commentReducer/comment'
+import { appendTag,setTag } from '../../reducers/tagReducer/tag';
 
 export function* handleGetPhoto(action) {
   try {
     const response = yield call(requestGetPhoto);
     const { data } = response;
-    // console.log(data,'=============[...data]')
-    // if (response.status === 200) {
+
+    if (data.success === true) {
       yield put(setPhoto(data.photos));
-    // }
+    }
   } catch (error) {
     console.log(error)
   }
@@ -17,57 +20,86 @@ export function* handleGetPhoto(action) {
 
 export function* handleGetPhotoByID(action) {
   try {
-    console.log(action.payload,'======action=======')
-    const response = yield call(requestGetPhotoBYId,action.payload);
+    const response = yield call(requestGetPhotoBYId, action.payload);
 
     const { data } = response;
-    console.log(response)
-    console.log(data.photo,"-----handle-----data")
-    // if (response.status === 200) {
-    //   yield put(setPhoto(data.photo));
-    // }
+    if (data.success === true) {
+      yield put(setPhoto(data.photo));
+    }
   } catch (error) {
     console.log(error)
   }
 }
 
+export function* handleGetCommentByID(action) {
+  try {
+    const response = yield call(requestCommentById, action.payload);
+    yield put(setComment(response));
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export function* handleCreateComment(action) {
+  try {
+    const response = yield call(requestCreateComment, action.payload);
+
+    const { data } = response;
+    yield put(appendComment(data.comment));
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+export function* handleCreateTag(action) {
+  try {
+    const response = yield call(requestCreateTag, action.payload);
+    yield put(appendTag(response));
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+export function* handleGetTagById(action) {
+  try {
+    const response = yield call(requestGetTagById, action.payload);
+    yield put(setTag(response));
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+
+
+export function* handleRemovePhotoByID(action) {
+  try {
+    const response = yield call(requestDeletePhotoBYId, action.payload);
+
+    const { data } = response;
+    if (data.success === true) {
+      yield put(setPhoto(data.photo));
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 export function* handleAddPhoto(action) {
   try {
     const response = yield call(requestAddPhoto, action.payload);
-    console.log(response,'=========add')
-
-    // const { data } = response.data;
-    // if (response.status === 200) {
-    //   yield put(addPhoto(data));
-    // }
+    yield put(getPhoto());
   } catch (error) {
     console.log(error)
   }
 }
 
-
-// export function* handleDeletePhoto(action) {
-//   try {
-//     const response = yield call(requestDeleteUser, action.payload);
-
-//     if (response.status === 200) {
-//       yield put(getUser());
-//     }
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
-
-// export function* handleUpdatePhoto(action) {
-//   try {
-//     const response = yield call(requestUpdateUser, action.payload);
-
-//     if (response.status === 200) {
-//       yield put(getUser());
-//     }
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
+export function* handleUpdatePhotoInfo(action) {
+  try {
+    const response = yield call(requestUpdatePhotoInfo, action.payload);
+  } catch (error) {
+    console.log(error)
+  }
+}

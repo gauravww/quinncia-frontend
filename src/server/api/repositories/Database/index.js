@@ -25,8 +25,10 @@ const schemas = {
     likes: true,
     tagIDs: true,
     commentIDs: true,
+    imageUrl: true,
     created_at: true,
     updated_at: true,
+    photoUrl: true
   },
   comment: {
     _id: true,
@@ -64,6 +66,7 @@ const attachData = (operationName, body) => {
     _id: randomstring.generate(),
     created_at: new Date(),
     updated_at: new Date(),
+    
   };
 
   return merge(

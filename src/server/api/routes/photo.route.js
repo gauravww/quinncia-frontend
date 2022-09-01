@@ -1,5 +1,6 @@
 import multer from 'multer';
 import express from 'express';
+import path from 'path'
 import {
   create,
   update,
@@ -10,9 +11,10 @@ import {
   attachTags,
 } from '../controllers/photo.controller';
 
+import upload from '../utils/fileUpload';
 const router = express.Router();
 
-router.post('/', multer({ dest: `${__dirname}/../storage` }).single('profile'), create);
+router.post('/', upload.single("profile"), create);
 router.put('/:_id/tags/attach', attachTags);
 router.put('/:_id', update);
 router.get('/content/:id', getContent);

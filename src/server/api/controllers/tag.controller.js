@@ -1,10 +1,16 @@
 import drop from 'lodash/drop';
 import find from 'lodash/find';
 import slice from 'lodash/slice';
+import randomstring from 'randomstring';
 import {
   add,
   find as findDB,
 } from '../repositories/Database';
+
+const imitateDBFailure = () => randomstring.generate({
+  length: 1,
+  capitalization: 'lowercase',
+}) === 'a';
 
 export const create = async (req, res) => {
   const newTag = add(
@@ -21,6 +27,7 @@ export const create = async (req, res) => {
 };
 
 export const getOne = async (req, res) => {
+  
   const tags = findDB(
     'tag',
     {},
@@ -60,5 +67,28 @@ export const getMany = async (req, res) => {
     .json({
       tags,
       success: true,
+    });
+};
+
+export const getOneById = async (req, res) => {
+  const tag = findDB(
+    'tag',
+    req.params
+  );
+
+  if (imitateDBFailure()) {
+    return res
+      .status(500)
+      .json({
+        success: false,
+        error: 'Database connection error',
+      });
+  }
+
+  return res
+    .status(200)
+    .json({
+      success: true,
+      tag: tag[0],
     });
 };

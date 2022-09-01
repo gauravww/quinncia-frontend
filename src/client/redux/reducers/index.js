@@ -6,8 +6,8 @@ export const photoList = createSlice({
   reducers: {
     getPhoto: () => { },
     addPhoto: () => { },
-    deletePhoto: () => { },
-    updatePhoto: () => { },
+    removePhoto: () => { },
+    updatePhotoInfo: () => { },
     getPhotoById: () => { },
     setPhoto: (state, action) => {
       const photoList = action.payload;
@@ -17,6 +17,6 @@ export const photoList = createSlice({
 })
 
 // Action creators are generated for each case reducer function
-export const { getPhoto, setPhoto, addPhoto, deletePhoto, updatePhoto } = photoList.actions
+export const { getPhoto, setPhoto, addPhoto, removePhoto, updatePhotoInfo, getPhotoById } = photoList.actions
 
 export default photoList.reducer

@@ -34,14 +34,6 @@ export const create = async (req, res) => {
     ),
   );
 
-  await new Promise((result) => {
-    fs.rename(
-      req.file.path,
-      path.resolve(`../storage/photo-${newPhoto._id}.png`),
-      result,
-    );
-  });
-
   return res
     .status(200)
     .json({
@@ -156,7 +148,8 @@ export const getOne = async (req, res) => {
 };
 
 export const getContent = async (req, res) => {
-  res.sendFile(path.resolve(`../storage/photo-${req.params.id}.png`));
+  const imgPath = path.join(process.cwd(),`/storage/photo-${req.params.id}.png`)
+  res.sendFile(imgPath);
 };
 
 export const getMany = async (req, res) => {
